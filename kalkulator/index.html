@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Kalkulator</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="calculator-container">
+            <div class="calculator-header">
+                <h1>Kalkulator Sederhana</h1>
+            </div>
+
+            <div class="form-group">
+                <label for="angka1" class="form-label">
+                    <span class="icon"></span> Angka Pertama:
+                </label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="angka1"
+                    placeholder="Masukkan angka pertama">
+                <div class="error-message" id="error1"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="angka2" class="form-label">
+                    <span class="icon"></span> Angka Kedua:
+                </label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="angka2"
+                    placeholder="Masukkan angka kedua">
+                <div class="error-message" id="error2"></div>
+            </div>
+
+            <div class="form-group">
+                <div class="operation-buttons">
+                    <button type="button" class="operation-btn"
+                        data-operation="add">
+                        <span class="icon">+</span>
+                    </button>
+                    <button type="button" class="operation-btn"
+                        data-operation="subtract">
+                        <span class="icon">-</span>
+                    </button>
+                    <button type="button" class="operation-btn"
+                        data-operation="multiply">
+                        <span class="icon">×</span>
+                    </button>
+                    <button type="button" class="operation-btn"
+                        data-operation="divide">
+                        <span class="icon">÷</span>
+                    </button>
+                </div>
+                <input type="hidden" id="operation" value>
+
+                <input type="hidden" id="operation" value="add">
+            </div>
+
+            <div class="result-container">
+                <h4>Hasil:</h4>
+                <p class="result-value" id="hasil">0</p>
+            </div>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>
