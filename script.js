@@ -1,33 +1,36 @@
-// Variabel global untuk menyimpan operasi yang dipilih
+// Variabel global untuk menyimpan operasi matematika yang dipilih user
 let selectedOperation = null;
 
 /* ==================================================
    EVENT LISTENER UNTUK TOMBOL OPERASI
+   - Saat tombol operasi (+, -, ×, ÷) diklik:
+     1. Hapus status "active" dari semua tombol.
+     2. Tambahkan class "active" hanya ke tombol yang dipilih.
+     3. Simpan operasi yang dipilih ke variabel global.
+     4. Jalankan fungsi calculate() untuk langsung menampilkan hasil.
    ================================================== */
 document.querySelectorAll('.operation-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-        // Hapus class "active" dari semua tombol
         document.querySelectorAll('.operation-btn').forEach(b => b.classList.remove('active'));
-
-        // Tambahkan class "active" ke tombol yang diklik
         this.classList.add('active');
-
-        // Simpan operasi yang dipilih
         selectedOperation = this.dataset.operation;
         document.getElementById('operation').value = selectedOperation;
-
-        // Hitung hasil secara otomatis
         calculate();
     });
 });
 
 /* ==================================================
    FUNGSI: calculate()
-   Reset pesan error.
-   Ambil nilai input → ubah , jadi . supaya bisa diparse.
-   Validasi angka kosong / tidak valid.
-   Cek operasi (tambah, kurang, kali, bagi).
-   Tampilkan hasil dengan format angka Indonesia (koma sebagai desimal).
+   Tujuan:
+   - Melakukan proses utama perhitungan.
+   Langkah-langkah:
+   1. Reset pesan error.
+   2. Ambil input angka dari user (ganti koma → titik).
+   3. Validasi apakah input benar (angka, bukan kosong).
+   4. Cek apakah operasi sudah dipilih.
+   5. Khusus pembagian: cek apakah pembagi nol.
+   6. Jika valid → lakukan perhitungan sesuai operasi.
+   7. Tampilkan hasil dengan format Indonesia.
    ================================================== */
 function calculate() {
     // Reset error messages
@@ -36,7 +39,7 @@ function calculate() {
         msg.textContent = '';
     });
 
-    // Ambil nilai input (ganti koma dengan titik agar bisa diparse)
+    // Ambil input angka dan konversi koma → titik
     const angka1 = parseFloat(document.getElementById('angka1').value.replace(',', '.'));
     const angka2 = parseFloat(document.getElementById('angka2').value.replace(',', '.'));
 
@@ -53,16 +56,19 @@ function calculate() {
         hasError = true;
     }
 
+    // Kalau belum pilih operasi
     if (!selectedOperation) {
         document.getElementById('hasil').textContent = 'Pilih operasi';
         return;
     }
 
+    // Cek pembagian dengan nol
     if (selectedOperation === 'divide' && angka2 === 0) {
         showError('error2', 'Tidak bisa membagi dengan nol');
         hasError = true;
     }
 
+    // Kalau ada error → hentikan
     if (hasError) {
         const hasil = document.getElementById('hasil');
         hasil.textContent = 'Input tidak valid. Harap masukkan angka yang benar';
@@ -70,31 +76,34 @@ function calculate() {
         return;
     }
 
-    // Lakukan perhitungan
+    // Lakukan perhitungan sesuai operasi
     let result;
     switch(selectedOperation) {
-        case 'add':
+        case 'add':      // Penjumlahan
             result = angka1 + angka2;
             break;
-        case 'subtract':
+        case 'subtract': // Pengurangan
             result = angka1 - angka2;
             break;
-        case 'multiply':
+        case 'multiply': // Perkalian
             result = angka1 * angka2;
             break;
-        case 'divide':
+        case 'divide':   // Pembagian
             result = angka1 / angka2;
             break;
     }
 
-    // Tampilkan hasil
+    // Tampilkan hasil dengan format Indonesia
     document.getElementById('hasil').style.color = 'black';
     document.getElementById('hasil').textContent = formatResult(result);
 }
 
 /* ==================================================
    FUNGSI: showError(elementId, message)
-   Menampilkan pesan error spesifik di bawah input yang salah.
+   Tujuan:
+   - Menampilkan pesan error di bawah input tertentu.
+   - Contoh: "Harap masukkan angka yang valid" atau
+             "Tidak bisa membagi dengan nol".
    ================================================== */
 function showError(elementId, message) {
     const errorElement = document.getElementById(elementId);
@@ -104,9 +113,12 @@ function showError(elementId, message) {
 
 /* ==================================================
    FUNGSI: formatResult(result)
-   Kalau hasil integer → tampil tanpa desimal.
-   Kalau hasil pecahan → tampil maksimal 2 desimal,
-   pakai format lokal Indonesia.
+   Tujuan:
+   - Memformat hasil supaya rapi.
+   Aturan:
+   - Kalau hasil bilangan bulat → tampil tanpa desimal.
+   - Kalau hasil pecahan → maksimal 2 angka di belakang koma.
+   - Gunakan format lokal Indonesia (koma untuk desimal).
    ================================================== */
 function formatResult(result) {
     if (Number.isInteger(result)) {
@@ -117,8 +129,11 @@ function formatResult(result) {
 
 /* ==================================================
    EVENT LISTENER ENTER
-   Tekan Enter di input pertama → pindah ke input kedua.
-   Tekan Enter di input kedua → langsung hitung hasil.
+   Tujuan:
+   - Mempermudah input dengan keyboard.
+   Aturan:
+   - Tekan Enter di input pertama → fokus pindah ke input kedua.
+   - Tekan Enter di input kedua → langsung jalankan perhitungan.
    ================================================== */
 document.getElementById('angka1').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
@@ -133,9 +148,12 @@ document.getElementById('angka2').addEventListener('keypress', function(e) {
 
 /* ==================================================
    FUNGSI: allowOnlyNumbers(input)
-   Membatasi input supaya hanya angka,
-   koma (untuk desimal Indonesia), dan minus (untuk bilangan negatif).
-   Menghapus karakter lain otomatis saat user mengetik.
+   Tujuan:
+   - Membatasi input supaya hanya angka, koma, dan minus.
+   Aturan:
+   - Hapus karakter selain [0-9 , . -]
+   - Hanya boleh 1 koma (untuk desimal).
+   - Hanya boleh 1 tanda minus, dan harus di depan.
    ================================================== */
 function allowOnlyNumbers(input) {
     input.addEventListener("input", function () {
@@ -146,6 +164,6 @@ function allowOnlyNumbers(input) {
     });
 }
 
-// Terapkan ke kedua input
+// Terapkan pembatasan input ke kedua kotak angka
 allowOnlyNumbers(document.getElementById("angka1"));
 allowOnlyNumbers(document.getElementById("angka2"));
