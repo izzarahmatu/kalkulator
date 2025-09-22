@@ -64,7 +64,7 @@ function calculate() {
 
     // Cek pembagian dengan nol
     if (selectedOperation === 'divide' && angka2 === 0) {
-        showError('error2', 'Tidak bisa membagi dengan nol');
+        showError('error2', 'Tidak bisa membagi dengan nol secara matematika tidak ada hasil yang konsisten');
         hasError = true;
     }
 
